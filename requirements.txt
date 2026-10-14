@@ -1,4 +1,0 @@
-rubpy
-openai
-flask
-waitress

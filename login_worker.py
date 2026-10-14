@@ -12,6 +12,18 @@ import sys
 
 os.chdir(os.getenv("DATA_DIR", "."))
 
+import logging  # noqa: E402
+
+
+class _HideSecrets(logging.Filter):
+    def filter(self, record):
+        msg = str(record.getMessage())
+        return not ("session information" in msg or "PRIVATE KEY" in msg)
+
+
+logging.getLogger().addFilter(_HideSecrets())
+logging.getLogger("rubpy").setLevel(logging.WARNING)
+
 
 _out = sys.stdout
 sys.stdout = sys.stderr  # هر print دیگری (مثلاً از rubpy) به لاگ می‌رود، نه به پروتکل پنل
@@ -51,6 +63,9 @@ def fake_input(prompt=""):
 builtins.input = fake_input
 
 from rubpy import Client  # noqa: E402
+
+for _h in logging.getLogger().handlers:
+    _h.addFilter(_HideSecrets())
 
 
 async def main():

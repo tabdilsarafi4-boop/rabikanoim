@@ -1,0 +1,18 @@
+services:
+  customer-panel:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATA_DIR: /data
+      PANEL_HOST: 0.0.0.0
+      PANEL_PORT: 8080
+    volumes:
+      - rubika_customer_data:/data
+    ports:
+      - "127.0.0.1:8080:8080"
+
+volumes:
+  rubika_customer_data:
